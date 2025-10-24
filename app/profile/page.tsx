@@ -2,13 +2,14 @@ import { SignOutButton } from "@/components/sign-out-button";
 import { auth } from "@/lib/auth";
 import { Sign } from "crypto";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function page() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
   if (!session) {
-    return <p className="text-center text-red-500">Ununthorized</p>;
+    return redirect("/auth/login");
   }
   return (
     <div className="container mx-auto max-w-screen-lg py-2">
