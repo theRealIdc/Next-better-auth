@@ -14,35 +14,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { set, z } from "zod";
 import { toast } from "sonner";
 import { signUp } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 export function RegisterForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+
     const formData = new FormData(e.currentTarget);
     const name = String(formData.get("name"));
     const email = String(formData.get("email"));
     const password = String(formData.get("password"));
 
     if (!name) {
-      setIsLoading(false);
       return toast.error("Please enter your name");
     }
 
     if (!email) {
-      setIsLoading(false);
       return toast.error("Please enter your email");
     }
 
     if (!password) {
-      setIsLoading(false);
       return toast.error("Please enter your password");
     }
 
@@ -60,7 +58,12 @@ export function RegisterForm() {
         password,
       },
       {
-        onRequest: () => {},
+        onRequest: () => {
+          setIsLoading(true);
+        },
+        onResponse: () => {
+          setIsLoading(false);
+        },
         onSuccess: () => {
           toast.success("Compte créé avec succès", {
             style: {
@@ -68,12 +71,16 @@ export function RegisterForm() {
               color: "#fff",
             },
           });
-          router.push("/espace");
+          router.push("/profile");
         },
         onError: (ctx: any) => {
-          toast.error(ctx.error.message);
+          if (ctx.error.status === 409) {
+            toast.error("Cet email est déjà utilisé");
+          } else {
+            toast.error(ctx.error.message);
+          }
         },
-      }
+      },
     );
   };
   return (
@@ -132,13 +139,25 @@ export function RegisterForm() {
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                name="password"
-                className="w-full"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  required
+                  className="w-full"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </Button>
+              </div>
             </div>
 
             <Button
