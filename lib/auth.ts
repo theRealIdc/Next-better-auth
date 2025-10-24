@@ -12,6 +12,14 @@ export const auth = betterAuth({
     minPasswordLength: 6,
     // emailConfirmation: true,
   },
+  user: {
+    additionalFields: {
+      role: {
+        type: ["ADMIN", "USER"],
+        input: false,
+      },
+    },
+  },
   session: {
     expiresIn: 30 * 24 * 60 * 60, // 30 days
   },

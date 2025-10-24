@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { signIn } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -205,9 +206,12 @@ export function LoginForm() {
         </div>
         <p className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <a href="#" className="text-foreground font-medium hover:underline">
+          <Link
+            href="/auth/register"
+            className="text-foreground font-medium hover:underline"
+          >
             Sign in
-          </a>
+          </Link>
         </p>
       </CardFooter>
     </Card>

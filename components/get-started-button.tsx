@@ -13,14 +13,22 @@ export const GetStartedButton = () => {
       </Button>
     );
   }
-  const href = session ? "/profile" : "/login";
+  const href = session ? "/profile" : "/auth/login";
 
   return (
     <>
       <Button size="lg" className="opacity-60">
         <Link href={href}>Get Started</Link>
       </Button>
-      {session && <p>Welcome back, {session.user.name} 🎉</p>}
+      {session && (
+        <p className="flex items-center gap-2">
+          <span
+            data-role={session.user.role}
+            className="size-4 rounded-full animate-pulse data-[role=USER]:bg-blue-400 data-[role=ADMIN]:bg-red-400"
+          ></span>
+          Welcome back, {session.user.name} 🎉
+        </p>
+      )}
     </>
   );
 };
